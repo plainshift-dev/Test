@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Установка приложения</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    max-width: 420px;
+    width: 100%;
+    padding: 40px 32px;
+    text-align: center;
+    animation: appear 0.4s ease;
+  }
+  @keyframes appear {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .icon {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 42px;
+    color: #fff;
+  }
+  .icon.install { background: #2a5298; }
+  .icon.denied  { background: #d93025; }
+  h1 { font-size: 22px; color: #1f2937; margin-bottom: 12px; }
+  p  { font-size: 15px; color: #55606e; line-height: 1.55; margin-bottom: 20px; }
+  .progress-wrap {
+    background: #e8edf3;
+    border-radius: 8px;
+    height: 10px;
+    overflow: hidden;
+    margin: 24px 0 10px;
+  }
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2a5298, #4a90d9);
+    border-radius: 8px;
+    transition: width 0.3s linear;
+  }
+  .percent { font-size: 13px; color: #7a8699; }
+  .btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 8px;
+    background: #2a5298;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .hidden { display: none; }
+  .warn-text { color: #b3261e; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- ЭКРАН 1: начало установки -->
+<div class="card" id="screen-install">
+  <div class="icon install">&#8595;</div>
+  <h1>Начинается установка приложения</h1>
+  <p>Пожалуйста, не закрывайте страницу.<br>Идёт подготовка к установке…</p>
+  <div class="progress-wrap"><div class="progress-bar" id="bar"></div></div>
+  <div class="percent" id="percent">0%</div>
+</div>
+
+<!-- ЭКРАН 2: предупреждение -->
+<div class="card hidden" id="screen-denied">
+  <div class="icon denied">&#10005;</div>
+  <h1>Установка невозможна</h1>
+  <p class="warn-text">Вы не являетесь работником организации.<br>Установка приложения невозможна.</p>
+  <p>Если вы считаете, что это ошибка, обратитесь<br>в IT-отдел вашей организации.</p>
+  <button class="btn" onclick="location.reload()">Проверить снова</button>
+</div>
+
+<script>
+  // Время "установки" до показа предупреждения (в мс)
+  const INSTALL_DURATION = 4000;
+
+  const bar = document.getElementById('bar');
+  const percent = document.getElementById('percent');
+  const start = Date.now();
+
+  const timer = setInterval(() => {
+    const t = Math.min((Date.now() - start) / INSTALL_DURATION, 1);
+    const p = Math.round(t * 100);
+    bar.style.width = p + '%';
+    percent.textContent = p + '%';
+    if (t >= 1) {
+      clearInterval(timer);
+      document.getElementById('screen-install').classList.add('hidden');
+      document.getElementById('screen-denied').classList.remove('hidden');
+    }
+  }, 100);
+</script>
+
+</body>
+</html>
